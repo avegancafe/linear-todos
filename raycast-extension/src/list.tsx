@@ -6,6 +6,7 @@ import {
   List,
   Toast,
   confirmAlert,
+  getPreferenceValues,
   showToast,
 } from '@raycast/api'
 import { useState } from 'react'
@@ -13,18 +14,26 @@ import { usePromise } from '@raycast/utils'
 import {
   PRIORITY_LABELS,
   Todo,
-  issueUrl,
   listTodos,
   markDone,
   snoozeTodo,
-} from './lib/cli'
+} from './lib/linear'
 import {
   BUCKET_ORDER,
   BUCKET_TITLES,
+  effectiveTimeZone,
   formatDueDate,
   groupByBucket,
+  parseDate,
+  toIsoDateTime,
 } from './lib/dates'
-import { ErrorDetail, showCliError } from './lib/errors'
+import { ErrorDetail, showActionError } from './lib/errors'
+import { resolveSettings } from './lib/settings'
+import { withLinearAuth } from './lib/oauth'
+
+interface Preferences {
+  timezone?: string
+}
 
 const PRIORITY_COLORS: Record<number, Color> = {
   0: Color.SecondaryText,
@@ -41,10 +50,17 @@ const SNOOZE_PRESETS: { title: string; when: string }[] = [
   { title: 'Next Monday', when: 'next Monday' },
 ]
 
-export default function ListTodos() {
+function ListTodos() {
   const [showAll, setShowAll] = useState(false)
+  const { timezone } = getPreferenceValues<Preferences>()
+  const tz = effectiveTimeZone(timezone)
+
   const { isLoading, data, error, revalidate } = usePromise(
-    (all: boolean) => listTodos(all),
+    async (all: boolean) => {
+      const settings = await resolveSettings()
+      const todos = await listTodos(settings.teamId, all)
+      return { settings, todos }
+    },
     [showAll]
   )
 
@@ -52,36 +68,49 @@ export default function ListTodos() {
     return <ErrorDetail error={error} />
   }
 
-  const todos = data ?? []
+  const settings = data?.settings
+  const todos = data?.todos ?? []
   const grouped = groupByBucket(todos)
 
   async function onDone(todo: Todo) {
+    if (!settings) {
+      return
+    }
     const toast = await showToast({
       style: Toast.Style.Animated,
       title: `Completing ${todo.identifier}…`,
     })
     try {
-      await markDone(todo.identifier)
+      await markDone(todo.id, settings.doneStateId)
       toast.style = Toast.Style.Success
       toast.title = `Completed ${todo.identifier}`
       await revalidate()
     } catch (err) {
-      await showCliError(err, `Failed to complete ${todo.identifier}`)
+      await showActionError(err, `Failed to complete ${todo.identifier}`)
     }
   }
 
   async function onSnooze(todo: Todo, when: string) {
+    const due = parseDate(when, tz)
+    if (!due) {
+      await showActionError(
+        new Error(`Could not parse date: ${when}`),
+        'Snooze failed'
+      )
+      return
+    }
+    const iso = toIsoDateTime(due, true, tz)
     const toast = await showToast({
       style: Toast.Style.Animated,
       title: `Snoozing ${todo.identifier}…`,
     })
     try {
-      await snoozeTodo(todo.identifier, when)
+      await snoozeTodo(todo.id, iso)
       toast.style = Toast.Style.Success
       toast.title = `Snoozed ${todo.identifier} to ${when}`
       await revalidate()
     } catch (err) {
-      await showCliError(err, `Failed to snooze ${todo.identifier}`)
+      await showActionError(err, `Failed to snooze ${todo.identifier}`)
     }
   }
 
@@ -119,7 +148,7 @@ export default function ListTodos() {
                         color: PRIORITY_COLORS[priority] ?? Color.SecondaryText,
                       },
                     },
-                    ...(todo.state?.name ? [{ text: todo.state.name }] : []),
+                    ...(todo.stateName ? [{ text: todo.stateName }] : []),
                   ]}
                   actions={
                     <ActionPanel>
@@ -155,7 +184,7 @@ export default function ListTodos() {
                       <ActionPanel.Section>
                         <Action.OpenInBrowser
                           title="Open in Linear"
-                          url={issueUrl(todo.identifier)}
+                          url={todo.url}
                           shortcut={{ modifiers: ['cmd'], key: 'o' }}
                         />
                         <Action.CopyToClipboard
@@ -196,3 +225,5 @@ export default function ListTodos() {
     </List>
   )
 }
+
+export default withLinearAuth(ListTodos)

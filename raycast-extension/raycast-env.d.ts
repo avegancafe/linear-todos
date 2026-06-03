@@ -8,19 +8,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 type ExtensionPreferences = {
-  /** Linear Todos Repo Path - Absolute path to the linear-todos repository (where main.py lives). */
-  "repoPath": string,
-  /** uv Executable Path - Optional absolute path to the uv binary. Leave blank to auto-detect. */
-  "uvPath": string,
-  /** Linear API Key - Optional. Overrides ~/.config/linear-todos/config.json. Leave blank to use the CLI's existing config/env. */
-  "apiKey": string,
-  /** Default Team ID - Optional. Overrides the team ID from config.json. */
-  "teamId": string,
-  /** Default State ID - Optional. Workflow state ID for new todos. Overrides config.json. */
-  "stateId": string,
-  /** Done State ID - Optional. Workflow state ID used when completing todos. Overrides config.json. */
-  "doneStateId": string,
-  /** Timezone - Optional. e.g. America/New_York. Overrides config.json for end-of-day calculations. */
+  /** Timezone - Optional IANA timezone (e.g. America/New_York) for end-of-day calculations. Leave blank to use your system timezone. */
   "timezone": string
 }
 
@@ -38,6 +26,8 @@ declare namespace Preferences {
   export type Review = ExtensionPreferences & {}
   /** Preferences accessible in the `digest` command */
   export type Digest = ExtensionPreferences & {}
+  /** Preferences accessible in the `setup` command */
+  export type Setup = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
@@ -54,5 +44,7 @@ declare namespace Arguments {
   export type Review = {}
   /** Arguments passed to the `digest` command */
   export type Digest = {}
+  /** Arguments passed to the `setup` command */
+  export type Setup = {}
 }
 

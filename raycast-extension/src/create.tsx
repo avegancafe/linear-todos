@@ -4,12 +4,25 @@ import {
   Form,
   Icon,
   Toast,
+  getPreferenceValues,
   popToRoot,
   showToast,
 } from '@raycast/api'
 import { useState } from 'react'
-import { createTodo } from './lib/cli'
-import { showCliError } from './lib/errors'
+import { createTodo, priorityToNumber } from './lib/linear'
+import {
+  effectiveTimeZone,
+  getRelativeDate,
+  parseDate,
+  toIsoDateTime,
+} from './lib/dates'
+import { showActionError } from './lib/errors'
+import { resolveSettings } from './lib/settings'
+import { withLinearAuth } from './lib/oauth'
+
+interface Preferences {
+  timezone?: string
+}
 
 interface FormValues {
   title: string
@@ -19,13 +32,31 @@ interface FormValues {
   description: string
 }
 
-export default function CreateTodo() {
+function CreateTodo() {
   const [titleError, setTitleError] = useState<string | undefined>()
+  const { timezone } = getPreferenceValues<Preferences>()
+  const tz = effectiveTimeZone(timezone)
 
   async function handleSubmit(values: FormValues) {
     if (!values.title || values.title.trim().length === 0) {
       setTitleError('Title is required')
       return
+    }
+
+    // Resolve due date: relative window wins over a specific date.
+    let dueDate: string | null = null
+    if (values.when) {
+      dueDate = getRelativeDate(values.when as 'day' | 'week' | 'month', tz)
+    } else if (values.date && values.date.trim().length > 0) {
+      const parsed = parseDate(values.date.trim(), tz)
+      if (!parsed) {
+        await showActionError(
+          new Error(`Could not parse date: ${values.date}`),
+          'Invalid date'
+        )
+        return
+      }
+      dueDate = toIsoDateTime(parsed, true, tz)
     }
 
     const toast = await showToast({
@@ -34,18 +65,26 @@ export default function CreateTodo() {
     })
 
     try {
-      await createTodo({
+      const settings = await resolveSettings()
+      const priority =
+        values.priority && values.priority !== 'unset'
+          ? priorityToNumber(values.priority)
+          : undefined
+
+      const todo = await createTodo({
+        teamId: settings.teamId,
         title: values.title.trim(),
-        priority: values.priority,
-        when: values.when || undefined,
-        date: values.date,
-        description: values.description,
+        description: values.description?.trim() || undefined,
+        stateId: settings.stateId,
+        priority,
+        dueDate,
       })
       toast.style = Toast.Style.Success
       toast.title = 'Todo created'
+      toast.message = `${todo.identifier} — ${todo.title}`
       await popToRoot()
     } catch (err) {
-      await showCliError(err, 'Failed to create todo')
+      await showActionError(err, 'Failed to create todo')
     }
   }
 
@@ -103,3 +142,5 @@ export default function CreateTodo() {
     </Form>
   )
 }
+
+export default withLinearAuth(CreateTodo)

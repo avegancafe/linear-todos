@@ -1,20 +1,39 @@
 import {
   LaunchProps,
   Toast,
+  getPreferenceValues,
   showToast,
-  updateCommandMetadata,
 } from '@raycast/api'
-import { remind } from './lib/cli'
-import { showCliError } from './lib/errors'
+import { withAccessToken } from '@raycast/utils'
+import { createTodo } from './lib/linear'
+import { effectiveTimeZone, parseReminderText } from './lib/dates'
+import { showActionError } from './lib/errors'
+import { resolveSettings } from './lib/settings'
+import { linear } from './lib/oauth'
 
-export default async function Remind(
-  props: LaunchProps<{ arguments: { text: string } }>
-) {
+interface Preferences {
+  timezone?: string
+}
+
+async function Remind(props: LaunchProps<{ arguments: { text: string } }>) {
   const text = props.arguments.text?.trim()
   if (!text) {
     await showToast({
       style: Toast.Style.Failure,
       title: 'Reminder text is required',
+    })
+    return
+  }
+
+  const { timezone } = getPreferenceValues<Preferences>()
+  const tz = effectiveTimeZone(timezone)
+  const { title, dueDate } = parseReminderText(text, tz)
+
+  if (!title) {
+    await showToast({
+      style: Toast.Style.Failure,
+      title: 'Could not parse reminder',
+      message: text,
     })
     return
   }
@@ -25,16 +44,19 @@ export default async function Remind(
   })
 
   try {
-    const out = await remind(text)
-    // The CLI prints a "✓ Created: ID - Title" line we can surface.
-    const created = out.split('\n').find((line) => line.includes('Created:'))
+    const settings = await resolveSettings()
+    const todo = await createTodo({
+      teamId: settings.teamId,
+      title,
+      stateId: settings.stateId,
+      dueDate,
+    })
     toast.style = Toast.Style.Success
     toast.title = 'Reminder created'
-    if (created) {
-      toast.message = created.replace(/^.*Created:\s*/, '').trim()
-    }
-    await updateCommandMetadata({ subtitle: `Last: ${text}` })
+    toast.message = `${todo.identifier} — ${todo.title}`
   } catch (err) {
-    await showCliError(err, 'Failed to create reminder')
+    await showActionError(err, 'Failed to create reminder')
   }
 }
+
+export default withAccessToken(linear)(Remind)

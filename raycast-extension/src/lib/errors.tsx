@@ -2,50 +2,49 @@ import {
   Action,
   ActionPanel,
   Detail,
-  openExtensionPreferences,
+  Icon,
   Toast,
+  launchCommand,
+  LaunchType,
   showToast,
 } from '@raycast/api'
-import { CliError } from './cli'
+import { SetupRequiredError } from './settings'
 
-/** Show a failure toast, with a shortcut to preferences for config issues. */
-export async function showCliError(
+/** Show a failure toast. For setup issues, offers to open the Setup command. */
+export async function showActionError(
   error: unknown,
   title: string
 ): Promise<void> {
   const message = error instanceof Error ? error.message : String(error)
-  const isConfig = error instanceof CliError && error.isConfigIssue
+  const isSetup = error instanceof SetupRequiredError
   await showToast({
     style: Toast.Style.Failure,
     title,
     message,
-    primaryAction: isConfig
+    primaryAction: isSetup
       ? {
-          title: 'Open Preferences',
-          onAction: () => openExtensionPreferences(),
+          title: 'Open Setup',
+          onAction: () =>
+            launchCommand({ name: 'setup', type: LaunchType.UserInitiated }),
         }
       : undefined,
   })
 }
 
-/** A Detail view that explains an error and offers to open preferences. */
+/** A Detail view explaining an error, with a shortcut to Setup when relevant. */
 export function ErrorDetail({ error }: { error: unknown }) {
   const message = error instanceof Error ? error.message : String(error)
-  const isConfig = error instanceof CliError && error.isConfigIssue
-  const details = error instanceof CliError ? error.stderr : ''
+  const isSetup = error instanceof SetupRequiredError
   const markdown = [
-    `# Something went wrong`,
+    isSetup ? '# Setup required' : '# Something went wrong',
     '',
     '```',
     message,
     '```',
     '',
-    isConfig
-      ? 'This looks like a configuration issue. Make sure the repo path is correct, and that credentials are set either in extension preferences or via `uv run python main.py setup`.'
-      : 'Check that `uv`, Python, and the linear-todos CLI are working from the configured repo path.',
-    ...(details && details !== message
-      ? ['', '**Full output:**', '', '```', details, '```']
-      : []),
+    isSetup
+      ? 'Run the **Setup** command to pick your todo team and workflow states.'
+      : 'If this persists, try re-connecting your Linear account or running Setup again.',
   ].join('\n')
 
   return (
@@ -54,8 +53,11 @@ export function ErrorDetail({ error }: { error: unknown }) {
       actions={
         <ActionPanel>
           <Action
-            title="Open Extension Preferences"
-            onAction={openExtensionPreferences}
+            title="Open Setup"
+            icon={Icon.Gear}
+            onAction={() =>
+              launchCommand({ name: 'setup', type: LaunchType.UserInitiated })
+            }
           />
         </ActionPanel>
       }
