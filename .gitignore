@@ -31,3 +31,9 @@ config.json
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Raycast extension (Node)
+raycast-extension/node_modules/
+raycast-extension/.raycast/
+raycast-extension/dist/
+raycast-extension/*.tsbuildinfo

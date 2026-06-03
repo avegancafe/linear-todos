@@ -1,0 +1,131 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "linear-todos",
+  "title": "Linear Todos",
+  "description": "Manage Linear todos with smart date parsing, driven by the linear-todos CLI.",
+  "icon": "icon.png",
+  "author": "avegancafe",
+  "license": "MIT",
+  "commands": [
+    {
+      "name": "list",
+      "title": "List Todos",
+      "subtitle": "Linear Todos",
+      "description": "List your todos grouped by urgency, with actions to complete and snooze.",
+      "mode": "view"
+    },
+    {
+      "name": "create",
+      "title": "Create Todo",
+      "subtitle": "Linear Todos",
+      "description": "Create a new todo with priority and due date.",
+      "mode": "view"
+    },
+    {
+      "name": "remind",
+      "title": "Remind",
+      "subtitle": "Linear Todos",
+      "description": "Create a todo from natural language (e.g. \"call mom by eod\").",
+      "mode": "no-view",
+      "arguments": [
+        {
+          "name": "text",
+          "placeholder": "call mom by end of day",
+          "type": "text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "review",
+      "title": "Daily Review",
+      "subtitle": "Linear Todos",
+      "description": "Show todos organized by urgency.",
+      "mode": "view"
+    },
+    {
+      "name": "digest",
+      "title": "Morning Digest",
+      "subtitle": "Linear Todos",
+      "description": "Show today's and overdue todos with a greeting.",
+      "mode": "view"
+    }
+  ],
+  "preferences": [
+    {
+      "name": "repoPath",
+      "title": "Linear Todos Repo Path",
+      "description": "Absolute path to the linear-todos repository (where main.py lives).",
+      "type": "textfield",
+      "required": false,
+      "default": "/Users/kyle/workspace/linear-todos"
+    },
+    {
+      "name": "uvPath",
+      "title": "uv Executable Path",
+      "description": "Optional absolute path to the uv binary. Leave blank to auto-detect.",
+      "type": "textfield",
+      "required": false,
+      "default": ""
+    },
+    {
+      "name": "apiKey",
+      "title": "Linear API Key",
+      "description": "Optional. Overrides ~/.config/linear-todos/config.json. Leave blank to use the CLI's existing config/env.",
+      "type": "password",
+      "required": false,
+      "default": ""
+    },
+    {
+      "name": "teamId",
+      "title": "Default Team ID",
+      "description": "Optional. Overrides the team ID from config.json.",
+      "type": "textfield",
+      "required": false,
+      "default": ""
+    },
+    {
+      "name": "stateId",
+      "title": "Default State ID",
+      "description": "Optional. Workflow state ID for new todos. Overrides config.json.",
+      "type": "textfield",
+      "required": false,
+      "default": ""
+    },
+    {
+      "name": "doneStateId",
+      "title": "Done State ID",
+      "description": "Optional. Workflow state ID used when completing todos. Overrides config.json.",
+      "type": "textfield",
+      "required": false,
+      "default": ""
+    },
+    {
+      "name": "timezone",
+      "title": "Timezone",
+      "description": "Optional. e.g. America/New_York. Overrides config.json for end-of-day calculations.",
+      "type": "textfield",
+      "required": false,
+      "default": ""
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.104.19",
+    "@raycast/utils": "^2.2.5"
+  },
+  "devDependencies": {
+    "@raycast/eslint-config": "^2.0.4",
+    "@types/node": "^22.5.1",
+    "@types/react": "^19.0.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4"
+  },
+  "scripts": {
+    "build": "ray build -e dist",
+    "dev": "ray develop",
+    "fix-lint": "ray lint --fix",
+    "lint": "ray lint",
+    "publish": "npx @raycast/api@latest publish"
+  }
+}
