@@ -2,7 +2,7 @@
 
 ## [Remind improvements] - {PR_MERGE_DATE}
 
-- Renamed the Remind command to **Remind Me to**.
+- Renamed the Remind command to **Remind me to**.
 - Append a `!<priority>` marker to a reminder to set its priority: `!urgent`
   (or `!important`), `!high`, `!medium`, `!low`, `!none`.
 - After creating a reminder, jump to the List Todos view instead of closing.
