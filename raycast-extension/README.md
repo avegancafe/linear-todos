@@ -9,7 +9,7 @@ external tools required.
 | Command | What it does |
 |---------|--------------|
 | **List Todos** | Browse todos grouped by urgency (overdue, today, this week, this month, later, no date). Mark done, snooze, open in Linear, copy ID. |
-| **Remind me to** | Quick-add a todo from one natural-language argument, e.g. `water the plants by eod`. Add a `!<priority>` marker (e.g. `!urgent`, `!low`) to set priority. |
+| **Remind Me** | Quick-add a todo from one natural-language argument, e.g. `water the plants by eod`. Add a `!<priority>` marker (e.g. `!urgent`, `!low`) to set priority. |
 | **Setup** | Pick your todo team and workflow states by name. |
 
 ## Getting started
@@ -35,7 +35,7 @@ Add a trailing `!<priority>` marker to set the priority; it is stripped from
 the title. Accepted: `!urgent` (or `!important`), `!high`, `!medium`, `!low`,
 `!none`.
 
-Reminder examples (via the **Remind me to** command):
+Reminder examples (via the **Remind Me** command):
 
 - `remind me to water the plants by end of day`
 - `repot the fern by eow`
