@@ -1,5 +1,13 @@
 # Linear Todos Changelog
 
+## [Streamline commands] - {PR_MERGE_DATE}
+
+- Focused the extension on **List Todos**, **Remind**, and **Setup**.
+- Removed the Create Todo, Daily Review, and Morning Digest commands (List
+  Todos already groups by urgency; Remind covers quick-add).
+- Remind now dismisses the Raycast window and clears the prompt after a
+  successful quick-add.
+
 ## [Native rewrite] - {PR_MERGE_DATE}
 
 - Rewritten as a native TypeScript extension using `@linear/sdk` and Raycast

@@ -1,7 +1,9 @@
 import {
   LaunchProps,
   Toast,
+  closeMainWindow,
   getPreferenceValues,
+  popToRoot,
   showToast,
 } from '@raycast/api'
 import { withAccessToken } from '@raycast/utils'
@@ -54,6 +56,10 @@ async function Remind(props: LaunchProps<{ arguments: { text: string } }>) {
     toast.style = Toast.Style.Success
     toast.title = 'Reminder created'
     toast.message = `${todo.identifier} — ${todo.title}`
+    // Dismiss the Raycast window and clear the typed argument so the prompt
+    // doesn't linger after a successful quick-add.
+    await closeMainWindow({ clearRootSearch: true })
+    await popToRoot({ clearSearchBar: true })
   } catch (err) {
     await showActionError(err, 'Failed to create reminder')
   }

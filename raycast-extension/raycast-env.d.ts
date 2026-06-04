@@ -18,14 +18,8 @@ declare type Preferences = ExtensionPreferences
 declare namespace Preferences {
   /** Preferences accessible in the `list` command */
   export type List = ExtensionPreferences & {}
-  /** Preferences accessible in the `create` command */
-  export type Create = ExtensionPreferences & {}
   /** Preferences accessible in the `remind` command */
   export type Remind = ExtensionPreferences & {}
-  /** Preferences accessible in the `review` command */
-  export type Review = ExtensionPreferences & {}
-  /** Preferences accessible in the `digest` command */
-  export type Digest = ExtensionPreferences & {}
   /** Preferences accessible in the `setup` command */
   export type Setup = ExtensionPreferences & {}
 }
@@ -33,17 +27,11 @@ declare namespace Preferences {
 declare namespace Arguments {
   /** Arguments passed to the `list` command */
   export type List = {}
-  /** Arguments passed to the `create` command */
-  export type Create = {}
   /** Arguments passed to the `remind` command */
   export type Remind = {
   /** call mom by end of day */
   "text": string
 }
-  /** Arguments passed to the `review` command */
-  export type Review = {}
-  /** Arguments passed to the `digest` command */
-  export type Digest = {}
   /** Arguments passed to the `setup` command */
   export type Setup = {}
 }

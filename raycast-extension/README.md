@@ -9,10 +9,7 @@ external tools required.
 | Command | What it does |
 |---------|--------------|
 | **List Todos** | Browse todos grouped by urgency (overdue, today, this week, this month, later, no date). Mark done, snooze, open in Linear, copy ID. |
-| **Create Todo** | Title, priority, due date (relative window or natural language), description. |
-| **Remind** | One natural-language argument, e.g. `call mom by eod`. |
-| **Daily Review** | Todos organized by urgency. |
-| **Morning Digest** | Today's and overdue todos with a greeting. |
+| **Remind** | Quick-add a todo from one natural-language argument, e.g. `call mom by eod`. |
 | **Setup** | Pick your todo team and workflow states by name. |
 
 ## Getting started
@@ -21,11 +18,11 @@ external tools required.
 2. Run **Setup** to choose your todo team, the state for new todos, and the
    "done" state. If your workspace has a single team, this is auto-detected on
    first use.
-3. Start creating and reviewing todos.
+3. Start adding and reviewing todos.
 
 ## Natural-language dates
 
-Both **Create Todo** (the "Specific Date" field) and **Remind** understand:
+The **Remind** command understands:
 
 - `today`, `tomorrow`
 - `in 3 days`, `in 2 weeks`
