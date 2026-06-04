@@ -143,6 +143,22 @@ describe('parseReminderText', () => {
     expect(r.dueDate).toBe('2025-01-15T23:59:59.000Z')
   })
 
+  it('supports other priority levels via !<priority>', () => {
+    expect(parseReminderText('mow the lawn !high', UTC, BASE).priority).toBe(2)
+    expect(parseReminderText('rake leaves !normal', UTC, BASE).priority).toBe(3)
+    expect(parseReminderText('water the moss !low', UTC, BASE).priority).toBe(4)
+    expect(parseReminderText('dust the leaves !none', UTC, BASE).priority).toBe(
+      0
+    )
+  })
+
+  it('strips the priority marker but keeps the date and title', () => {
+    const r = parseReminderText('trim the hedge by eow !low', UTC, BASE)
+    expect(r.title).toBe('Trim the hedge')
+    expect(r.priority).toBe(4)
+    expect(r.dueDate).toBe('2025-01-17T23:59:59.000Z')
+  })
+
   it('only strips the marker at the end', () => {
     const r = parseReminderText('important repotting on Friday', UTC, BASE)
     expect(r.title).toBe('Important repotting')

@@ -21,7 +21,7 @@
       "name": "remind",
       "title": "Remind Me to",
       "subtitle": "Linear Todos",
-      "description": "Create a todo from natural language (e.g. \"water the plants by eod !important\").",
+      "description": "Create a todo from natural language (e.g. \"water the plants by eod !urgent\").",
       "mode": "no-view",
       "arguments": [
         {

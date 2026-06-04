@@ -310,7 +310,23 @@ export function getRelativeDate(
 }
 
 /**
- * Parse reminder text into { title, dueDate }. Port of _parse_reminder_text.
+ * Maps the words accepted by the trailing "!<priority>" reminder marker to
+ * Linear priority numbers (0=None, 1=Urgent, 2=High, 3=Normal, 4=Low).
+ * "important" is an alias for urgent; "medium" is an alias for normal.
+ */
+const PRIORITY_WORD_TO_NUMBER: Record<string, number> = {
+  important: 1,
+  urgent: 1,
+  high: 2,
+  normal: 3,
+  medium: 3,
+  low: 4,
+  none: 0,
+}
+
+/**
+ * Parse reminder text into { title, dueDate, priority }. Port of
+ * _parse_reminder_text, plus a trailing "!<priority>" marker.
  * dueDate is an ISO UTC datetime string or null.
  */
 export function parseReminderText(
@@ -334,13 +350,17 @@ export function parseReminderText(
     }
   }
 
-  // Trailing "!important" / "!urgent" marks the todo urgent (priority 1).
-  // Strip it before date parsing so it can't interfere with trailing dates.
+  // A trailing "!<priority>" marker sets the priority and is stripped from
+  // the title. Examples: !urgent, !important (alias for urgent), !high,
+  // !normal, !medium (alias for normal), !low, !none. Stripped before date
+  // parsing so it can't interfere with trailing dates.
   let priority: number | undefined
-  const urgentMatch = clean.match(/\s*!\s*(important|urgent)\s*$/i)
-  if (urgentMatch && urgentMatch.index !== undefined) {
-    priority = 1
-    clean = clean.slice(0, urgentMatch.index).trim()
+  const priorityMatch = clean.match(
+    /\s*!\s*(important|urgent|high|normal|medium|low|none)\s*$/i
+  )
+  if (priorityMatch && priorityMatch.index !== undefined) {
+    priority = PRIORITY_WORD_TO_NUMBER[priorityMatch[1].toLowerCase()]
+    clean = clean.slice(0, priorityMatch.index).trim()
   }
 
   let dueDate: string | null = null
