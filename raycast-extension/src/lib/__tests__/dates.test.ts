@@ -122,5 +122,27 @@ describe('parseReminderText', () => {
     const r = parseReminderText('just a plain task', UTC, BASE)
     expect(r.title).toBe('Just a plain task')
     expect(r.dueDate).toBeNull()
+    expect(r.priority).toBeUndefined()
+  })
+
+  it('strips trailing !important and sets urgent priority', () => {
+    const r = parseReminderText('fix the build !important', UTC, BASE)
+    expect(r.title).toBe('Fix the build')
+    expect(r.priority).toBe(1)
+    expect(r.dueDate).toBeNull()
+  })
+
+  it('supports !urgent and combines with a due date', () => {
+    const r = parseReminderText('ship release by eod !urgent', UTC, BASE)
+    expect(r.title).toBe('Ship release')
+    expect(r.priority).toBe(1)
+    expect(r.dueDate).toBe('2025-01-15T23:59:59.000Z')
+  })
+
+  it('only strips the marker at the end', () => {
+    const r = parseReminderText('important meeting on Friday', UTC, BASE)
+    expect(r.title).toBe('Important meeting')
+    expect(r.priority).toBeUndefined()
+    expect(r.dueDate).toBe('2025-01-17T23:59:59.000Z')
   })
 })

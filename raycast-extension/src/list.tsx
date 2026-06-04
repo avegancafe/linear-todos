@@ -133,11 +133,21 @@ function ListTodos() {
           >
             {items.map((todo) => {
               const priority = todo.priority ?? 0
+              const isUrgent = priority === 1
               const due = formatDueDate(todo.dueDate)
               return (
                 <List.Item
                   key={todo.id}
-                  title={todo.title}
+                  icon={
+                    isUrgent
+                      ? { source: Icon.ExclamationMark, tintColor: Color.Red }
+                      : undefined
+                  }
+                  title={
+                    isUrgent
+                      ? { value: todo.title, tooltip: 'Urgent' }
+                      : todo.title
+                  }
                   subtitle={todo.identifier}
                   keywords={[todo.identifier]}
                   accessories={[

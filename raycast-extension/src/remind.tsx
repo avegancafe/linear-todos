@@ -1,9 +1,9 @@
 import {
   LaunchProps,
+  LaunchType,
   Toast,
-  closeMainWindow,
   getPreferenceValues,
-  popToRoot,
+  launchCommand,
   showToast,
 } from '@raycast/api'
 import { withAccessToken } from '@raycast/utils'
@@ -29,7 +29,7 @@ async function Remind(props: LaunchProps<{ arguments: { text: string } }>) {
 
   const { timezone } = getPreferenceValues<Preferences>()
   const tz = effectiveTimeZone(timezone)
-  const { title, dueDate } = parseReminderText(text, tz)
+  const { title, dueDate, priority } = parseReminderText(text, tz)
 
   if (!title) {
     await showToast({
@@ -51,15 +51,14 @@ async function Remind(props: LaunchProps<{ arguments: { text: string } }>) {
       teamId: settings.teamId,
       title,
       stateId: settings.stateId,
+      priority,
       dueDate,
     })
     toast.style = Toast.Style.Success
     toast.title = 'Reminder created'
     toast.message = `${todo.identifier} — ${todo.title}`
-    // Dismiss the Raycast window and clear the typed argument so the prompt
-    // doesn't linger after a successful quick-add.
-    await closeMainWindow({ clearRootSearch: true })
-    await popToRoot({ clearSearchBar: true })
+    // Jump to the List Todos view so the new reminder is visible in context.
+    await launchCommand({ name: 'list', type: LaunchType.UserInitiated })
   } catch (err) {
     await showActionError(err, 'Failed to create reminder')
   }

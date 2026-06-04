@@ -317,7 +317,7 @@ export function parseReminderText(
   text: string,
   timeZone?: string,
   base: Date = new Date()
-): { title: string; dueDate: string | null } {
+): { title: string; dueDate: string | null; priority?: number } {
   const lower = text.toLowerCase()
   const prefixes = [
     'remind me to ',
@@ -332,6 +332,15 @@ export function parseReminderText(
       clean = text.slice(prefix.length).trim()
       break
     }
+  }
+
+  // Trailing "!important" / "!urgent" marks the todo urgent (priority 1).
+  // Strip it before date parsing so it can't interfere with trailing dates.
+  let priority: number | undefined
+  const urgentMatch = clean.match(/\s*!\s*(important|urgent)\s*$/i)
+  if (urgentMatch && urgentMatch.index !== undefined) {
+    priority = 1
+    clean = clean.slice(0, urgentMatch.index).trim()
   }
 
   let dueDate: string | null = null
@@ -409,7 +418,7 @@ export function parseReminderText(
     title = title[0].toUpperCase() + title.slice(1)
   }
 
-  return { title, dueDate }
+  return { title, dueDate, priority }
 }
 
 // ---------------------------------------------------------------------------

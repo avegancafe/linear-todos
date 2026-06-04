@@ -1,5 +1,12 @@
 # Linear Todos Changelog
 
+## [Remind improvements] - {PR_MERGE_DATE}
+
+- Renamed the Remind command to **Remind Me to**.
+- Append `!important` / `!urgent` to a reminder to set Urgent priority.
+- After creating a reminder, jump to the List Todos view instead of closing.
+- Urgent todos are highlighted in List Todos with a red exclamation icon.
+
 ## [Streamline commands] - {PR_MERGE_DATE}
 
 - Focused the extension on **List Todos**, **Remind**, and **Setup**.
