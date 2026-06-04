@@ -92,56 +92,60 @@ describe('getRelativeDate', () => {
 describe('parseReminderText', () => {
   it('strips prefixes and parses eod', () => {
     const r = parseReminderText(
-      'remind me to call mom by end of day',
+      'remind me to water the plants by end of day',
       UTC,
       BASE
     )
-    expect(r.title).toBe('Call mom')
+    expect(r.title).toBe('Water the plants')
     expect(r.dueDate).toBe('2025-01-15T23:59:59.000Z')
   })
 
   it("parses 'by eow'", () => {
-    const r = parseReminderText('review PR by eow', UTC, BASE)
-    expect(r.title).toBe('Review PR')
+    const r = parseReminderText('repot the fern by eow', UTC, BASE)
+    expect(r.title).toBe('Repot the fern')
     expect(r.dueDate).toBe('2025-01-17T23:59:59.000Z')
   })
 
   it("parses 'on <weekday>'", () => {
-    const r = parseReminderText('meeting on Friday', UTC, BASE)
-    expect(r.title).toBe('Meeting')
+    const r = parseReminderText('prune the roses on Friday', UTC, BASE)
+    expect(r.title).toBe('Prune the roses')
     expect(r.dueDate).toBe('2025-01-17T23:59:59.000Z')
   })
 
   it('parses trailing bare date', () => {
-    const r = parseReminderText('do something tomorrow', UTC, BASE)
-    expect(r.title).toBe('Do something')
+    const r = parseReminderText('water the plants tomorrow', UTC, BASE)
+    expect(r.title).toBe('Water the plants')
     expect(r.dueDate).toBe('2025-01-16T23:59:59.000Z')
   })
 
   it('keeps title when no date present', () => {
-    const r = parseReminderText('just a plain task', UTC, BASE)
-    expect(r.title).toBe('Just a plain task')
+    const r = parseReminderText('mist the orchids', UTC, BASE)
+    expect(r.title).toBe('Mist the orchids')
     expect(r.dueDate).toBeNull()
     expect(r.priority).toBeUndefined()
   })
 
   it('strips trailing !important and sets urgent priority', () => {
-    const r = parseReminderText('fix the build !important', UTC, BASE)
-    expect(r.title).toBe('Fix the build')
+    const r = parseReminderText('water the cactus !important', UTC, BASE)
+    expect(r.title).toBe('Water the cactus')
     expect(r.priority).toBe(1)
     expect(r.dueDate).toBeNull()
   })
 
   it('supports !urgent and combines with a due date', () => {
-    const r = parseReminderText('ship release by eod !urgent', UTC, BASE)
-    expect(r.title).toBe('Ship release')
+    const r = parseReminderText(
+      'fertilize the garden by eod !urgent',
+      UTC,
+      BASE
+    )
+    expect(r.title).toBe('Fertilize the garden')
     expect(r.priority).toBe(1)
     expect(r.dueDate).toBe('2025-01-15T23:59:59.000Z')
   })
 
   it('only strips the marker at the end', () => {
-    const r = parseReminderText('important meeting on Friday', UTC, BASE)
-    expect(r.title).toBe('Important meeting')
+    const r = parseReminderText('important repotting on Friday', UTC, BASE)
+    expect(r.title).toBe('Important repotting')
     expect(r.priority).toBeUndefined()
     expect(r.dueDate).toBe('2025-01-17T23:59:59.000Z')
   })

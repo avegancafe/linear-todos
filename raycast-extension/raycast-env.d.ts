@@ -29,7 +29,7 @@ declare namespace Arguments {
   export type List = {}
   /** Arguments passed to the `remind` command */
   export type Remind = {
-  /** call mom by end of day */
+  /** water the plants by end of day */
   "text": string
 }
   /** Arguments passed to the `setup` command */

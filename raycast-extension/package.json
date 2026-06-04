@@ -21,12 +21,12 @@
       "name": "remind",
       "title": "Remind Me to",
       "subtitle": "Linear Todos",
-      "description": "Create a todo from natural language (e.g. \"call mom by eod !important\").",
+      "description": "Create a todo from natural language (e.g. \"water the plants by eod !important\").",
       "mode": "no-view",
       "arguments": [
         {
           "name": "text",
-          "placeholder": "call mom by end of day",
+          "placeholder": "water the plants by end of day",
           "type": "text",
           "required": true
         }

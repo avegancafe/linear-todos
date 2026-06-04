@@ -168,7 +168,7 @@ export function parseDate(
 
   // Fallback: chrono-node (replaces Python dateparser; forwardDate ≈ future).
   // Only accept a result that consumes (essentially) the whole input, so that
-  // free text like "something tomorrow" is not treated as a bare date here —
+  // free text like "water the plants tomorrow" is not treated as a bare date here —
   // the reminder parser handles trailing-date extraction separately.
   const parsed = chrono.parse(input, base, { forwardDate: true })
   if (parsed.length > 0) {
@@ -393,7 +393,7 @@ export function parseReminderText(
     }
   }
 
-  // Trailing bare date (e.g. "do something tomorrow")
+  // Trailing bare date (e.g. "water the plants tomorrow")
   if (!dueDate) {
     const words = clean.split(/\s+/)
     for (let i = 0; i < words.length; i++) {
