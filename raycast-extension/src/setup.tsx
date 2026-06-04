@@ -1,12 +1,15 @@
 import {
   Action,
   ActionPanel,
+  Detail,
   Icon,
   List,
   Toast,
+  popToRoot,
   showToast,
   useNavigation,
 } from '@raycast/api'
+import { useEffect } from 'react'
 import { usePromise } from '@raycast/utils'
 import { StateOption, TeamOption, getTeamStates, getTeams } from './lib/linear'
 import { ErrorDetail } from './lib/errors'
@@ -64,36 +67,58 @@ function StatePicker(props: {
   )
 }
 
+/** Terminal screen: persists the settings, then confirms with a clear summary. */
+function SetupComplete(props: { settings: Settings }) {
+  const { settings } = props
+
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      await saveSettings(settings)
+      if (!cancelled) {
+        await showToast({
+          style: Toast.Style.Success,
+          title: 'Setup complete',
+        })
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [settings])
+
+  const markdown = [
+    '# ✅ Setup complete!',
+    '',
+    'Your Linear Todos are configured:',
+    '',
+    `- **Team:** ${settings.teamName ?? settings.teamId}`,
+    `- **New-todo state:** ${settings.stateName ?? settings.stateId}`,
+    `- **Done state:** ${settings.doneStateName ?? settings.doneStateId}`,
+    '',
+    'You can re-run **Setup** anytime to change these.',
+  ].join('\n')
+
+  return (
+    <Detail
+      navigationTitle="Setup Complete"
+      markdown={markdown}
+      actions={
+        <ActionPanel>
+          <Action title="Done" icon={Icon.Check} onAction={() => popToRoot()} />
+        </ActionPanel>
+      }
+    />
+  )
+}
+
 function SetupFlow() {
-  const { push, pop } = useNavigation()
+  const { push } = useNavigation()
   const { isLoading, data: teams, error } = usePromise(getTeams)
   const { data: existing } = usePromise(loadSettings)
 
   if (error) {
     return <ErrorDetail error={error} />
-  }
-
-  async function finish(
-    team: TeamOption,
-    newState: StateOption,
-    doneState: StateOption
-  ) {
-    const settings: Settings = {
-      teamId: team.id,
-      teamName: team.name,
-      stateId: newState.id,
-      stateName: newState.name,
-      doneStateId: doneState.id,
-      doneStateName: doneState.name,
-    }
-    await saveSettings(settings)
-    await showToast({
-      style: Toast.Style.Success,
-      title: 'Setup complete',
-      message: `${team.name}: new → ${newState.name}, done → ${doneState.name}`,
-    })
-    // Pop back to root of this command.
-    pop()
   }
 
   function pickTeam(team: TeamOption) {
@@ -110,7 +135,20 @@ function SetupFlow() {
               title="Done State"
               description="Select the state for COMPLETED todos (usually Done)"
               preferType="completed"
-              onPick={(doneState) => finish(team, newState, doneState)}
+              onPick={(doneState) =>
+                push(
+                  <SetupComplete
+                    settings={{
+                      teamId: team.id,
+                      teamName: team.name,
+                      stateId: newState.id,
+                      stateName: newState.name,
+                      doneStateId: doneState.id,
+                      doneStateName: doneState.name,
+                    }}
+                  />
+                )
+              }
             />
           )
         }
