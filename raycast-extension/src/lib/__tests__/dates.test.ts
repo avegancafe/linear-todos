@@ -145,7 +145,7 @@ describe('parseReminderText', () => {
 
   it('supports other priority levels via !<priority>', () => {
     expect(parseReminderText('mow the lawn !high', UTC, BASE).priority).toBe(2)
-    expect(parseReminderText('rake leaves !normal', UTC, BASE).priority).toBe(3)
+    expect(parseReminderText('rake leaves !medium', UTC, BASE).priority).toBe(3)
     expect(parseReminderText('water the moss !low', UTC, BASE).priority).toBe(4)
     expect(parseReminderText('dust the leaves !none', UTC, BASE).priority).toBe(
       0

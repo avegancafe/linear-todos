@@ -32,8 +32,8 @@ The **Remind** command understands:
 - …and more, via natural-language parsing.
 
 Add a trailing `!<priority>` marker to set the priority; it is stripped from
-the title. Accepted: `!urgent` (or `!important`), `!high`, `!normal` (or
-`!medium`), `!low`, `!none`.
+the title. Accepted: `!urgent` (or `!important`), `!high`, `!medium`, `!low`,
+`!none`.
 
 Reminder examples (via the **Remind Me to** command):
 

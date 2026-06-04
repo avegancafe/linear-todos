@@ -312,13 +312,12 @@ export function getRelativeDate(
 /**
  * Maps the words accepted by the trailing "!<priority>" reminder marker to
  * Linear priority numbers (0=None, 1=Urgent, 2=High, 3=Normal, 4=Low).
- * "important" is an alias for urgent; "medium" is an alias for normal.
+ * "important" is an alias for urgent; "medium" maps to Normal.
  */
 const PRIORITY_WORD_TO_NUMBER: Record<string, number> = {
   important: 1,
   urgent: 1,
   high: 2,
-  normal: 3,
   medium: 3,
   low: 4,
   none: 0,
@@ -352,11 +351,11 @@ export function parseReminderText(
 
   // A trailing "!<priority>" marker sets the priority and is stripped from
   // the title. Examples: !urgent, !important (alias for urgent), !high,
-  // !normal, !medium (alias for normal), !low, !none. Stripped before date
-  // parsing so it can't interfere with trailing dates.
+  // !medium, !low, !none. Stripped before date parsing so it can't interfere
+  // with trailing dates.
   let priority: number | undefined
   const priorityMatch = clean.match(
-    /\s*!\s*(important|urgent|high|normal|medium|low|none)\s*$/i
+    /\s*!\s*(important|urgent|high|medium|low|none)\s*$/i
   )
   if (priorityMatch && priorityMatch.index !== undefined) {
     priority = PRIORITY_WORD_TO_NUMBER[priorityMatch[1].toLowerCase()]
