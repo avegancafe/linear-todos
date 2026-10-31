@@ -93,24 +93,40 @@ on its identifier using the `url` Linear returns.
 
 ## Morning digest (routine, 8am)
 
-Kyle's open todos (assigned to him or labeled `kyle`) that are **overdue or
-due today**, plus anything **In Progress**. Open with one short friendly line,
-not the same one every day. Then one line per item: linked identifier, title,
-and "overdue since <date>" when it's late. If nothing is due, say so in a line
-("Nothing due today."), and stop.
+Kyle's items are open TODO-team issues (Backlog, Todo or In Progress) assigned
+to him or labeled `kyle`. Many of them have no due date, so a digest of only
+dated items is often empty; the Up next section is what keeps it useful.
+
+Post, skipping any empty section:
+
+1. One short friendly opening line, not the same one every day.
+2. **Overdue and due today**: due on or before today (Eastern), oldest first,
+   with "overdue since <date>" when late.
+3. **In progress**.
+4. **Up next**: his Todo items with no due date, Urgent and High first, at most
+   5, each with its priority.
+5. One closing line counting the rest: "Also N in backlog (M optional)."
+
+Items labeled `optional` stay out of sections 2 to 4; they're only counted. One
+line per item: linked identifier, title, and the priority when it's Urgent or
+High. If sections 2 to 4 are all empty, say "Nothing on your plate today" and
+give the backlog count.
 
 ## Evening review (routine, 5pm)
 
-All of Kyle's open todos, bucketed by due date (Eastern):
+All of Kyle's open items (same definition as the digest), grouped by due date
+in Eastern time:
 
 - **Do today**: overdue or due today
-- **By end of week**: due in the next 7 days
-- **By end of month**: due in 8 to 28 days
-- **No due date** (only if any)
+- **This week**: due in the next 7 days
+- **This month**: due in 8 to 28 days
+- **No date**, split into **Todo** (Urgent and High first) and **Backlog**
 
 Leave out items due more than 28 days out. Write "nothing here" under an empty
-bucket. End with at most one line naming anything overdue for more than a week,
-so he can finish, snooze or drop it.
+dated group. Put items labeled `optional` in one closing line that counts them
+and gives their identifiers. End with at most one line naming anything overdue
+by more than a week, so he can finish, snooze or drop it. One line per item:
+linked identifier, title, and the priority when it's Urgent or High.
 
 ## Things not to do
 
