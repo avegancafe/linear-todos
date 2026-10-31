@@ -120,7 +120,8 @@ in Eastern time:
 - **Do today**: overdue or due today
 - **This week**: due in the next 7 days
 - **This month**: due in 8 to 28 days
-- **No date**, split into **Todo** (Urgent and High first) and **Backlog**
+- **No date**, split into **Todo** (In Progress items first, then Urgent and
+  High) and **Backlog**
 
 Leave out items due more than 28 days out. Write "nothing here" under an empty
 dated group. Put items labeled `optional` in one closing line that counts them
