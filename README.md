@@ -86,6 +86,17 @@ uv run python main.py review
 
 **See [SKILL.md](SKILL.md) for complete documentation.**
 
+## Claude Duet
+
+`skills/linear-todos/` is an instruction-only version for [Claude Duet](https://claude.ai/messages).
+Claude reads and writes the TODO team through the Linear connector, so it needs
+no API key, CLI or cron. It keeps the CLI's date rules (`eod`, `eow`, `eom`,
+`next Monday`, `in 2 weeks`), the trailing `!priority` marker and the review
+buckets. The morning digest and evening review become Duet routines.
+
+The repo root is also a Claude plugin (`.claude-plugin/plugin.json`), so it can
+be listed in a plugin marketplace and installed to claude.ai chat plugins.
+
 ## Testing
 
 ```bash

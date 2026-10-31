@@ -1,6 +1,6 @@
 # linear-todos
 
-A todo manager built on Linear, available in two forms that share the same
+A todo manager built on Linear, available in three forms that share the same
 concepts (smart natural-language dates, priorities, urgency grouping):
 
 1. **Python CLI** (repo root) — the original. An agent-skill / CLI that talks to
@@ -8,9 +8,14 @@ concepts (smart natural-language dates, priorities, urgency grouping):
 2. **Raycast extension** (`raycast-extension/`) — a native TypeScript port that
    talks to Linear via `@linear/sdk` + Raycast OAuth. Store-oriented; no Python
    dependency.
+3. **Claude Duet skill** (`skills/linear-todos/`, plugin manifest in
+   `.claude-plugin/`) — instruction-only. Claude manages the TODO team through
+   the Linear connector, so there is no API key, CLI or cron. The digest and
+   review run as Duet routines in Kyle's todo channel.
 
-The two are independent: the Raycast extension does **not** call the Python CLI.
-It reimplements the relevant logic (date parsing, API calls) in TypeScript.
+The three are independent: neither the Raycast extension nor the Duet skill
+calls the Python CLI. Raycast reimplements the logic in TypeScript; the Duet
+skill restates the date rules and review buckets in prose.
 
 ## Repository layout
 
@@ -28,6 +33,8 @@ It reimplements the relevant logic (date parsing, API calls) in TypeScript.
 ├── tests/                   # pytest suite for the Python CLI
 ├── pyproject.toml           # Python project (uv, hatchling)
 ├── SKILL.md                 # agent-skill manifest for the Python CLI
+├── .claude-plugin/          # Claude plugin manifest (for the Duet skill)
+├── skills/linear-todos/     # Claude Duet skill: instruction-only, Linear connector
 ├── cron-jobs.txt            # example system crontab entries
 └── raycast-extension/       # native TypeScript Raycast extension
     ├── package.json         # Raycast manifest (commands, prefs, deps)
@@ -63,11 +70,15 @@ It reimplements the relevant logic (date parsing, API calls) in TypeScript.
 
 ### Behavior notes
 - `dates.py` is the canonical date-parsing spec; `dates.ts` mirrors it (and the
-  vitest suite encodes that parity). Keep them in sync when changing parsing.
-- Reminder syntax (both CLI and extension): natural-language date phrases plus a
+  vitest suite encodes that parity), and `skills/linear-todos/SKILL.md` restates
+  it in prose. Keep all three in sync when changing parsing.
+- Reminder syntax (CLI, extension and Duet skill): natural-language date phrases plus a
   trailing `!<priority>` marker — `!urgent`/`!important`, `!high`, `!medium`,
   `!low`, `!none` — which is stripped from the title.
 - Cron digests are a **Python-CLI-only** feature; Raycast has no cron equivalent.
+  In Duet the same digest (8am) and review (5pm) run as channel routines that
+  use the skill.
+- Bump `version` in `.claude-plugin/plugin.json` whenever the Duet skill changes.
 
 ## Git
 - Conventional Commits style (`feat:`, `fix:`, `docs:`, `style:`, `chore:`).

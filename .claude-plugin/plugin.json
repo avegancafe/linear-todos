@@ -1,0 +1,12 @@
+{
+  "name": "linear-todos",
+  "version": "0.1.0",
+  "description": "Manage Kyle's Linear TODO team from Claude Duet through the Linear connector: add todos from plain text with the CLI's date rules and !priority marker, list, finish, snooze, and write the morning digest and evening review. Instruction-only; no API key.",
+  "author": {
+    "name": "Kyle Holzinger",
+    "url": "https://github.com/avegancafe"
+  },
+  "repository": "https://github.com/avegancafe/linear-todos",
+  "license": "MIT",
+  "icon": "raycast-extension/assets/icon.png"
+}
