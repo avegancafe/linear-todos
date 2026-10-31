@@ -22,6 +22,11 @@ CLI from Duet.
   (often labeled with their name, like `chloe` or `elise`). **"Kyle's todos"
   means issues assigned to him (`assignee: "me"`) or labeled `kyle`.** Show the
   whole team only when he asks for everything or names someone else.
+- **Issues labeled `claude-ignore` are invisible to this skill.** Leave them
+  out of lists, the digest, the review, counts and suggestions, and don't pick
+  one when matching an issue by its words for done or snooze. Only touch one
+  when Kyle names it by identifier (for example "mark TODO-69 done"). `list_issues`
+  can't exclude a label, so ask for the `labels` field and drop these yourself.
 - Kyle's time zone is `America/New_York`. Every "today", "end of day" and
   "this week" is his Eastern date, not UTC.
 
