@@ -1,0 +1,40 @@
+name: Release to marketplace
+
+# When this plugin's version changes on main, tell avegancafe-marketplace so it
+# can update its entry (its sync-plugin-versions workflow does the rest).
+# Needs the MARKETPLACE_DISPATCH_TOKEN secret: a fine-grained PAT scoped to
+# avegancafe/avegancafe-marketplace with Contents: read & write.
+
+on:
+  push:
+    branches: [main]
+    paths: ['.claude-plugin/plugin.json']
+  workflow_dispatch:
+
+jobs:
+  notify-marketplace:
+    # Only main is a release. A manual run picked on another branch does nothing.
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      # Read main as it is now, not the commit that triggered this run, so a
+      # delayed run or a re-run of an old one can't send an older version.
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Send plugin-released to avegancafe-marketplace
+        env:
+          GH_TOKEN: ${{ secrets.MARKETPLACE_DISPATCH_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::MARKETPLACE_DISPATCH_TOKEN is not set — the marketplace entry was NOT updated. See .claude/CLAUDE.md."
+            exit 1
+          fi
+          name=$(jq -r .name .claude-plugin/plugin.json)
+          version=$(jq -r .version .claude-plugin/plugin.json)
+          jq -n --arg n "$name" --arg v "$version" --arg s "$(git rev-parse HEAD)" \
+            '{event_type: "plugin-released", client_payload: {name: $n, version: $v, sha: $s}}' \
+            | gh api repos/avegancafe/avegancafe-marketplace/dispatches --input -
+          echo "Sent plugin-released: $name $version"

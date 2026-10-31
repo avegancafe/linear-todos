@@ -79,6 +79,10 @@ skill restates the date rules and review buckets in prose.
   In Duet the same digest (8am) and review (5pm) run as channel routines that
   use the skill.
 - Bump `version` in `.claude-plugin/plugin.json` whenever the Duet skill changes.
+  On `main`, `.github/workflows/release.yml` then tells `avegancafe-marketplace`
+  so its `linear-todos` entry follows. It needs the `MARKETPLACE_DISPATCH_TOKEN`
+  repo secret (fine-grained PAT, avegancafe-marketplace only, Contents read &
+  write); without it the release job fails and the entry stops tracking.
 
 ## Git
 - Conventional Commits style (`feat:`, `fix:`, `docs:`, `style:`, `chore:`).
