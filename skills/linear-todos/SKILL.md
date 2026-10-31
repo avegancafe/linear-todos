@@ -96,43 +96,85 @@ on its identifier using the `url` Linear returns.
   No date given means tomorrow.
 - Reply in one line: "Done: TODO-123 Call mom" / "Moved TODO-123 to Mon Nov 9".
 
-## Morning digest (routine, 8am)
+## Morning digest and evening review: fixed formats
 
-Kyle's items are open TODO-team issues (Backlog, Todo or In Progress) assigned
-to him or labeled `kyle`. Many of them have no due date, so a digest of only
-dated items is often empty; the Up next section is what keeps it useful.
+Both use the exact format the old CLI's `digest` and `review` commands printed
+(`src/linear_todos/cli.py`). Copy the templates below character for character.
+Add no other text: no intro, no summary, no closing line, no extra sections,
+headings, counts or commentary. The only parts that change are the greeting
+picked from the list and the item lines.
 
-Post, skipping any empty section:
+**Which items.** Kyle's open items: TODO-team issues in Backlog, Todo or In
+Progress that are assigned to him (`assignee: "me"`) or labeled `kyle`, minus
+anything labeled `claude-ignore`. Fetch both lists with the `labels` and
+`dueDate` fields, merge, drop duplicates, then drop `claude-ignore` items.
+Items labeled `optional` are treated like any other item.
 
-1. One short friendly opening line, not the same one every day.
-2. **Overdue and due today**: due on or before today (Eastern), oldest first,
-   with "overdue since <date>" when late.
-3. **In progress**.
-4. **Up next**: his Todo items with no due date, Urgent and High first, at most
-   5, each with its priority.
-5. One closing line counting the rest: "Also N in backlog (M optional)."
+**Dates.** Compare due dates to today's date in America/New_York.
 
-Items labeled `optional` stay out of sections 2 to 4; they're only counted. One
-line per item: linked identifier, title, and the priority when it's Urgent or
-High. If sections 2 to 4 are all empty, say "Nothing on your plate today" and
-give the backlog count.
+**Item line.** Every item is exactly this line, two spaces before the bullet:
 
-## Evening review (routine, 5pm)
+```
+  • [TODO-12](https://linear.app/avegancafe/issue/TODO-12): Title as written in Linear
+```
 
-All of Kyle's open items (same definition as the digest), grouped by due date
-in Eastern time:
+Within a section, order items by due date (oldest first), then by identifier.
 
-- **Do today**: overdue or due today
-- **This week**: due in the next 7 days
-- **This month**: due in 8 to 28 days
-- **No date**, split into **Todo** (In Progress items first, then Urgent and
-  High) and **Backlog**
+### Morning digest (routine, 8am)
 
-Leave out items due more than 28 days out. Write "nothing here" under an empty
-dated group. Put items labeled `optional` in one closing line that counts them
-and gives their identifiers. End with at most one line naming anything overdue
-by more than a week, so he can finish, snooze or drop it. One line per item:
-linked identifier, title, and the priority when it's Urgent or High.
+Items: overdue or due today.
+
+If there are any, pick one greeting from this list exactly as written:
+
+- 🌅 Rise and grind!
+- ☕ Morning! Coffee's brewing, here's what's cooking:
+- 🌞 Good morning — let's knock these out:
+- ✨ Today's the day to tackle:
+- 🚀 Morning! Here's your hit list:
+- 🎯 Locked and loaded for today:
+- 🌤️ Rise and shine, here's what's due:
+
+and post:
+
+```
+<greeting>
+
+  • [TODO-12](https://linear.app/avegancafe/issue/TODO-12): Title
+  • [TODO-15](https://linear.app/avegancafe/issue/TODO-15): Title
+```
+
+If there are none, post only one line picked from this list exactly as written:
+
+- 🌅 Morning! Nothing urgent today — you're free.
+- ☕ Coffee time, no fires to put out today.
+- 🌞 Good morning! Clear skies, zero TODOs.
+- ✨ Morning! Looks like a chill day ahead.
+
+### Evening review (routine, 5pm)
+
+Groups: **Do Today** is overdue or due today; **By End of Week** is due 1 to 7
+days from today; **By End of Month** is due 8 to 28 days from today; **No Due
+Date** is items with no due date. Items due more than 28 days out are left out.
+Post exactly:
+
+```
+**🚨 Do Today:**
+<item lines, or "  • nothing to see here">
+
+**📊 Board Overview:**
+
+**By End of Week:**
+<item lines, or "  • nothing to see here">
+
+**By End of Month:**
+<item lines, or "  • nothing to see here">
+
+**No Due Date:**
+<item lines>
+```
+
+Leave out the blank line and the whole **No Due Date:** block when no item lacks
+a due date. Never leave out the other three headings.
 
 ## Things not to do
 
