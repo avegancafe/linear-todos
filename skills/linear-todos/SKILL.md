@@ -22,11 +22,22 @@ CLI from Duet.
   (often labeled with their name, like `chloe` or `elise`). **"Kyle's todos"
   means issues assigned to him (`assignee: "me"`) or labeled `kyle`.** Show the
   whole team only when he asks for everything or names someone else.
-- **Issues labeled `claude-ignore` are invisible to this skill.** Leave them
-  out of lists, the digest, the review, counts and suggestions, and don't pick
-  one when matching an issue by its words for done or snooze. Only touch one
-  when Kyle names it by identifier (for example "mark TODO-69 done"). `list_issues`
-  can't exclude a label, so ask for the `labels` field and drop these yourself.
+- **Ignored issues are invisible to this skill.** An issue is ignored when it
+  is labeled `claude-ignore`, or when its project carries the `claude-ignore`
+  project label (so Kyle can hide a whole project without tagging each issue).
+  Leave ignored issues out of lists, the digest, the review, counts and
+  suggestions, and don't pick one when matching an issue by its words for done
+  or snooze. Only touch one when Kyle names it by identifier (for example "mark
+  TODO-69 done").
+- **How to drop them.** `list_issues` can't exclude a label, so filter
+  yourself:
+  1. Call `list_projects` with `label: "claude-ignore"` and fields `uuid` and
+     `name` (no team filter). These are the ignored projects. An empty result
+     is normal: it means no project is ignored right now.
+  2. Ask `list_issues` for the `labels` and `projectId` fields, and drop every
+     issue labeled `claude-ignore` or whose `projectId` matches one of those
+     project `uuid`s. Issues with no project are only dropped by their own
+     label.
 - Kyle's time zone is `America/New_York`. Every "today", "end of day" and
   "this week" is his Eastern date, not UTC.
 
@@ -84,8 +95,9 @@ Examples, if today is Wednesday:
 "What's on my plate" / "list my todos": `list_issues` with `team: "TODO"`,
 `assignee: "me"`, then again with `label: "kyle"`; merge, drop duplicates and
 anything in a closed status. Ask for fields `title`, `status`, `dueDate`,
-`priority`, `url`, `labels`. Group them like the review below. Link each item
-on its identifier using the `url` Linear returns.
+`priority`, `url`, `labels`, `projectId`, and drop ignored issues as above.
+Group them like the review below. Link each item on its identifier using the
+`url` Linear returns.
 
 ## Done and snooze
 
@@ -106,8 +118,11 @@ picked from the list and the item lines.
 
 **Which items.** Kyle's open items: TODO-team issues in Backlog, Todo or In
 Progress that are assigned to him (`assignee: "me"`) or labeled `kyle`, minus
-anything labeled `claude-ignore`. Fetch both lists with the `labels` and
-`dueDate` fields, merge, drop duplicates, then drop `claude-ignore` items.
+ignored issues (labeled `claude-ignore`, or in a project with the
+`claude-ignore` project label). Fetch the ignored projects with `list_projects`
+and `label: "claude-ignore"`, fetch both issue lists with the `labels`,
+`projectId` and `dueDate` fields, merge, drop duplicates, then drop ignored
+issues.
 Items labeled `optional` are treated like any other item.
 
 **Dates.** Compare due dates to today's date in America/New_York.
