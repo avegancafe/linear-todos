@@ -110,11 +110,18 @@ Group them like the review below. Link each item on its identifier using the
 
 ## Morning digest and evening review: fixed formats
 
-Both use the exact format the old CLI's `digest` and `review` commands printed
-(`src/linear_todos/cli.py`). Copy the templates below character for character.
-Add no other text: no intro, no summary, no closing line, no extra sections,
-headings, counts or commentary. The only parts that change are the greeting
-picked from the list and the item lines.
+Both use the wording the old CLI's `digest` and `review` commands printed
+(`src/linear_todos/cli.py`), with empty lines changed for Duet. Copy the
+templates below character for character, empty lines included. Add no other
+text: no intro, no summary, no closing line, no extra sections, headings,
+counts or commentary. The only parts that change are the greeting picked from
+the list and the item lines.
+
+**Empty lines split bubbles.** The Duet app shows a message as a new bubble at
+every empty line. So the digest has no empty lines at all (it must arrive as
+one bubble), and the review has exactly one, after the Do Today items, so Do
+Today is its own bubble and the board overview is a second one. Never add an
+empty line anywhere else, including at the end.
 
 **Which items.** Kyle's open items: TODO-team issues in Backlog, Todo or In
 Progress that are assigned to him (`assignee: "me"`) or labeled `kyle`, minus
@@ -149,11 +156,10 @@ If there are any, pick one greeting from this list exactly as written:
 - 🎯 Locked and loaded for today:
 - 🌤️ Rise and shine, here's what's due:
 
-and post:
+and post, with the first item on the line right after the greeting:
 
 ```
 <greeting>
-
   • [TODO-12](https://linear.app/avegancafe/issue/TODO-12): Title
   • [TODO-15](https://linear.app/avegancafe/issue/TODO-15): Title
 ```
@@ -177,19 +183,18 @@ Post exactly:
 <item lines, or "  • nothing to see here">
 
 **📊 Board Overview:**
-
 **By End of Week:**
 <item lines, or "  • nothing to see here">
-
 **By End of Month:**
 <item lines, or "  • nothing to see here">
-
 **No Due Date:**
 <item lines>
 ```
 
-Leave out the blank line and the whole **No Due Date:** block when no item lacks
-a due date. Never leave out the other three headings.
+The one empty line after the Do Today items is the only one. Board Overview,
+By End of Week, By End of Month and No Due Date run together with no empty
+lines between them and none at the end. Leave out the whole **No Due Date:**
+block when no item lacks a due date. Never leave out the other headings.
 
 ## Things not to do
 
